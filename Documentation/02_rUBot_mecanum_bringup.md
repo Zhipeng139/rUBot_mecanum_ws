@@ -467,7 +467,7 @@ This is an exemple:
 The first step in robotics is to bringup the rUBot mecanum robot in our generated virtual world. This means:
 - Open Gazebo with the designed virtual world
 - spawn our robot in the designed virtual world 
-- and opened Rviz to see the topic messages.
+- and open Rviz to see the topic messages.
 
 This is defined in "rubot_bringup_sw.launch" file. 
 ``` shell
@@ -477,7 +477,7 @@ roslaunch rubot_mecanum_description rubot_bringup_sw.launch
 
 >Careful:
 - we have included in launch file: gazebo rubot spawn and rviz visualization 
-- Verify in rviz you have to change the fixed frame to "odom" frame
+- Verify in rviz you have in fixed frame the "odom" frame
 
 Now we are ready to control our robot in this virtual environment!
 
@@ -566,13 +566,13 @@ Let's see some important characteristics:
 - We need to increase the buffer size of /odom publisher because the Arduino MEGA Buffer size for messages is 512bits (not enough for Odometry messages). To perform this modification, in **ROS.h** file from the Arduino library you have to add (at the end in else case section):
   ```python
   #else
-
-    //typedef NodeHandle_<ArduinoHardware, 25, 25, 512, 512, FlashReadOutBuffer_> NodeHandle;
-    typedef NodeHandle_<ArduinoHardware, 5, 5, 1024, 1024, FlashReadOutBuffer_> NodeHandle;
-
-  #endif  
+  //typedef NodeHandle_<ArduinoHardware> NodeHandle; // default 25, 25, 512, 512
+  typedef NodeHandle_<ArduinoHardware, 5, 5, 1024, 1024> NodeHandle;
+  #endif
   ```
-
+  > In older versions the syntax was:
+  >
+  >typedef NodeHandle_<ArduinoHardware, 5, 5, 1024, 1024, FlashReadOutBuffer_> NodeHandle;
 - The default baudrate to communicate with Arduino board is 47600. I suggest to maintain the Baudrate to 57600!
   >
   >In some cases is necessary to increase it. To increase this baudrate you need in **ArduinoHardware.h** file from the Arduino >library to change this default baudrate:
@@ -600,6 +600,13 @@ Let's see some important characteristics:
   ```
   > Important!: This changes have to be made in the library files where Arduino is installed (usually in /home/arduino/libraries). This can be found when in arduino IDLE we go to settings to see the Exemples folder.
 
+Let's **upload the Arduino program: rUBot_drive_mpuig.ino** (there is a number version):
+- with filesystem manager go to Documentation/files/Arduino folder
+- Select the last program version and uncompress the file in the same folder
+- Open the main program rUBot_drive_mpuig.ino
+- verify the board is Arduino Mega and port tty/ACM0
+- upload the program to arduino board (any ROS bringup previous execution has to be closed!)
+
 When we power the arduino board, this program starts and a new node appears in the ROS environment. To test its behaviour we have to run:
 ```xml
 roscore
@@ -609,6 +616,12 @@ rostopic pub -r 10 /cmd_vel geometry_msgs/Twist '[0.5, 0, 0]' '[0, 0, 0]'
 > the port to which the Arduino is connected,is usually /dev/ttyACM0. Change it if you have another one.
 
 > The last command sends a Twist message to the robot. The wheels should be moving forward. You can try different movements by modifying the numbers inside the brackets: '[vx, vy, vz]' '[wx, wy, wz]'
+
+Graphically we have designed a **Closed loop PID CD-motor speed control**:
+
+![](./Images/02_Bringup/19_pid.png)
+
+Each wheel is turning at a precise speed defined by the inverse kinematics. The speed dynamics and steady state value is ensured by the designed PID closed loop.
 
 ### **4.2. Launch LIDAR node**
 

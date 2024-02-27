@@ -58,6 +58,8 @@ The rock5b onboard is preinstalled with:
 - ROS Noetic
 - Arduino
 
+You can find the image in OneDrive: Documents/Software/ROS/Rock/rock5b_32_original.img
+
 When connected to power, it is configured to:
 - generate a hotspot "rubot_XX"
 - virtual monitor installed
@@ -90,7 +92,40 @@ For a proper Display resolution in Nomachine, select: Display --> Change the siz
 
 You will have the rUBot desktop on your windows nomachine screen
 
-### **2.2. Clone a repository**
+### **2.2. Setup the rubot with raspberrypi4**
+
+The raspberrypi4 onboard is preinstalled with:
+- Ubuntu20.04 server 64bits
+- NoMachine remote desktop
+- ROS Noetic
+- Arduino
+
+You can find the image in OneDrive: Documents/Software/ROS/RBPi/Noetic_rbpi4.img.gz (ready for Pi Imager)
+
+When connected to power, it is configured to:
+- generate a hotspot "rubot_XX"
+- virtual monitor installed
+
+### **Robot connection from PC**
+
+To connect your PC to the Robot, we have to:
+- select the rubot hotspot:
+    - SSID name: rubot_XX 
+    - password "rUBot_Mec"
+
+### **Using nomachine remote desktop**
+To connect your computer to the robot using Nomachine, follow the same procedure and take into account:
+
+- user: ubuntu
+- password: ubuntu1234
+
+>You do not need a Dongle HDMI
+
+For a proper Display resolution in Nomachine, select: Display --> Change the size of remote screen
+
+You will have the rUBot desktop on your windows nomachine screen
+
+### **2.3. Clone a repository**
 
 The first time you have to clone the "rUBot_mecanum_ws" repository to the home folder.
 ```shell

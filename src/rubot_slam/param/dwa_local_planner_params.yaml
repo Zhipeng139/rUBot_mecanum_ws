@@ -1,28 +1,26 @@
 DWAPlannerROS:
 
-  holonomic_robot: true           #false
-# Robot Configuration Parameters
-  max_vel_x: 0.2
-  min_vel_x: -0.2
+  holonomic_robot: true           #false for differential drive
+  # The velocity when robot is holonomic
+  max_vel_x: 0.15
+  min_vel_x: -0.15
+  max_vel_y: 0.15 #0.0 non holonomic
+  min_vel_y: -0.15 #0.0 non holonomic
+  # Also needed
+  max_vel_trans:  0.15 # very important to be maintained
+  min_vel_trans:  -0.15 # very important to be maintained
 
-  #max_vel_y: 0.1 #0.0 non holonomic
-  #min_vel_y: -0.1 #0.0 non holonomic
+  max_vel_theta: 0.5
+  min_vel_theta: 0.3
 
-# The velocity when robot is moving in a straight line
-  max_vel_trans:  0.2
-  min_vel_trans:  -0.2
-
-  max_vel_theta: 1
-  min_vel_theta: -1
-
-  acc_lim_x: 1
-  acc_lim_y: 1 #0.0 non holonomic
-  acc_lim_theta: 1
+  acc_lim_x: 0.4
+  acc_lim_y: 0.4 #0.0 non holonomic
+  acc_lim_theta: 0.8
 
 # Goal Tolerance Parametes
   xy_goal_tolerance: 0.1
-  yaw_goal_tolerance: 0.1
-  latch_xy_goal_tolerance: false
+  yaw_goal_tolerance: 0.15
+  latch_xy_goal_tolerance: false #true
 
 # Forward Simulation Parameters
   sim_time: 1.5
