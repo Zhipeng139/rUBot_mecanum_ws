@@ -16,6 +16,16 @@ def triangular_path(v, td):
     move_rubot(-v,v,0,td/sqrt(2))
     move_rubot(-v,-v,0,td/sqrt(2))
 
+def c_path (v, w, td):
+    while not rospy.is_shutdown():
+        move_rubot(0,0,-w,td)
+
+def rombe_path(v, td):
+    move_rubot(v, v, 0, td)
+    move_rubot(-v, v, 0, td)
+    move_rubot(-v, -v, 0, td)
+    move_rubot(v, -v, 0, td)
+
 
 if __name__ == '__main__':
     try:
@@ -30,6 +40,8 @@ if __name__ == '__main__':
 
         elif path == "Triangular":
             triangular_path(v, td)
+        elif path == "C":
+            rombe_path(v, td)
         else:
             print('Error: unknown movement')
 

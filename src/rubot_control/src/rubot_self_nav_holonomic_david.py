@@ -10,11 +10,12 @@ class rUBot:
 
     def __init__(self):
 
-        rospy.init_node("rubot_nav", anonymous=False)
+        rospy.init_node("rubot_nav_holonomic", anonymous=False)
         self._distanceLaser = rospy.get_param("~distance_laser")
         self._speedFactor = rospy.get_param("~speed_factor")
         self._forwardSpeed = rospy.get_param("~forward_speed")
         self._backwardSpeed = rospy.get_param("~backward_speed")
+        self._lateralSpeed = rospy.get_param("~lateral_speed")
         self._rotationSpeed = rospy.get_param("~rotation_speed")
 
         self._msg = Twist()
@@ -46,39 +47,38 @@ class rUBot:
         closestDistance, elementIndex = min((val, idx) for (idx, val) in enumerate(scan.ranges) if scan.range_min < val < scan.range_max)
         angleClosestDistance = (elementIndex / len(scan.ranges) * 360)  
 
+        rospy.loginfo(elementIndex)
+
         angleClosestDistance= self.__wrapAngle(angleClosestDistance)
         rospy.loginfo("Degree wraped %5.2f ",(angleClosestDistance))
-
+        
         if angleClosestDistance > 0:
             angleClosestDistance=(angleClosestDistance-180)
-
         else:
             angleClosestDistance=(angleClosestDistance+180)
-
+			
         rospy.loginfo("Closest distance of %5.2f m at %5.1f degrees.",closestDistance, angleClosestDistance)
+                      
 
-        if closestDistance < self._distanceLaser and -80 < angleClosestDistance < 80:
-            if angleClosestDistance <= 45 and angleClosestDistance >= -45: 
-                # Obstacle in front 
+        if closestDistance < self._distanceLaser:
+            if (angleClosestDistance < -30):
+                # Mover el robot hacia la izquierda si el objeto está a la derecha
                 self._msg.linear.x = 0
-                self._msg.linear.y = 0
+                self._msg.linear.y = self._lateralSpeed * self._speedFactor
+                rospy.loginfo("Object detected on the right side. Moving the robot to the left.")
+            elif angleClosestDistance > 30:
+                # Mover el robot hacia la derecha si el objeto está a la izquierda
+                self._msg.linear.x = 0
+                self._msg.linear.y = -self._lateralSpeed * self._speedFactor
+                rospy.loginfo("Object detected on the left side. Moving the robot to the right.")
+            else:
+                # Detener el movimiento lateral si el objeto está en frente
+                # self._msg.linear.x = self._backwardSpeed * self._speedFactor
+                self._msg.linear.x = 0
                 self._msg.angular.z = self._rotationSpeed * self._speedFactor
-                rospy.loginfo("Obstacle detected on front side. Rotating...")
-            elif angleClosestDistance > 45:
-                # Obstacle in front and to the right of the robot
-                self._msg.linear.x = 0
-                self._msg.linear.y = -self._forwardSpeed * self._speedFactor
-                self._msg.angular.z = 0
-                rospy.loginfo("Obstacle detected on the left side. Moving right...")
-            elif angleClosestDistance < -45:
-                # Obstacle in front and to the left of the robot
-                self._msg.linear.x = 0
-                self._msg.linear.y = self._forwardSpeed * self._speedFactor
-                self._msg.angular.z = 0
-                rospy.loginfo("Obstacle detected on the right side. Moving left...")
-        else: # No obstcle in front of the robot or the obtcle is too far
+
+        else:
             self._msg.linear.x = self._forwardSpeed * self._speedFactor
-            self._msg.linear.y = 0
             self._msg.angular.z = 0
 
     def __sign(self, val):
