@@ -67,11 +67,11 @@ def take_action(regions):
         angular_z = 0
     elif regions['bright'] < d:
         state_description = 'case 5 - bright'
-        linear_x = vx
+        linear_x = 0
         angular_z = - wz * vf
     else:
         state_description = 'case 6 - Far'
-        linear_x = vx
+        linear_x = 0
         angular_z = - wz * vf
 
     rospy.loginfo(state_description)
