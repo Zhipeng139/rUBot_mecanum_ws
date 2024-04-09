@@ -9,8 +9,6 @@ d = 0
 vx = 0
 wz = 0
 vf = 0
-vy = 0
-last_obs = 0  # 0 nothing, -1 left, 1 right
 
 isScanRangesLengthCorrectionFactorCalculated = False
 scanRangesLengthCorrectionFactor = 2
@@ -20,11 +18,12 @@ def clbk_laser(msg):
     # En la primera ejecucion, calculamos el factor de correcion
     global isScanRangesLengthCorrectionFactorCalculated
     global scanRangesLengthCorrectionFactor
-
+    
     if not isScanRangesLengthCorrectionFactorCalculated:
-        scanRangesLengthCorrectionFactor = len(msg.ranges) / 360
-        isScanRangesLengthCorrectionFactorCalculated = True
+            scanRangesLengthCorrectionFactor = len(msg.ranges) / 360
+            isScanRangesLengthCorrectionFactorCalculated = True
 
+ 
     r_bright_min = int(30 * scanRangesLengthCorrectionFactor)
     r_bright_max = int(90 * scanRangesLengthCorrectionFactor)
 
@@ -59,11 +58,10 @@ def clbk_laser(msg):
         'l_bright': min(min(msg.ranges[l_bright_min:l_bright_max]), 3),
         'back': min(min(msg.ranges[back_min:int(360*scanRangesLengthCorrectionFactor)]), min(msg.ranges[0: back_max]), 3),
     }
+    take_action(regions)
 
-    take_action(regions, last_obs)
 
-
-def take_action(regions, last_obs):
+def take_action(regions):
     msg = Twist()
     linear_x = 0
     linear_y = 0
@@ -71,80 +69,54 @@ def take_action(regions, last_obs):
 
     state_description = ''
 
-    if regions['front'] > d and regions['r_fright'] > 2*d and regions['right'] > 2*d and regions['r_bright'] > 2*d and regions['l_fright'] > 2*d and regions['left'] > 2*d and regions['l_bright'] > 2*d and regions['back'] > 2*d:
+    if regions['front'] > 2*d and regions['r_fright'] > 2*d and regions['right'] > 2*d and regions['r_bright'] > 2*d:
         state_description = 'case 1 - nothing'
-        linear_x = vx
+        linear_x = vx * vf
         angular_z = 0
-        last_obs = 0
-    elif regions['front'] < d:
-        if last_obs == 0 or last_obs == 1:
-            state_description = 'case 2 - obs in the front or front and right'
-            linear_x = 0
-            linear_y = vy
-            last_obs = 1
-        elif last_obs == -1:
-            state_description = 'case 3 - front and obs in the left'
-            linear_x = -vx
-            linear_y = 0
-            last_obs = -1
-    elif regions['back'] < d:
-        if last_obs == 0 or last_obs == -1:
-            state_description = 'case 4 - obs in the back or back and left'
-            linear_x = 0
-            linear_y = -vy
-            last_obs = -1
-        elif last_obs == 1:
-            state_description = 'case 5 - back and obs in the right'
-            linear_x = vx
-            linear_y = 0
-            last_obs = 1
-    elif regions['right'] < d:
-        state_description = 'case 8 - right'
-        linear_x = vx
-        linear_y = 0
-        angular_z = 0
-        last_obs = 1
-    elif regions['left'] < d:
-        state_description = 'case 9 - left'
-        linear_x = -vx
-        linear_y = 0
-        angular_z = 0
-        last_obs = -1
-    elif regions['l_fright'] < d or regions['r_fright'] < d:
-        state_description = 'case 6 - l_fright'
-        linear_x = 0
-        linear_y = 0
-        angular_z = wz * vf
-        last_obs = 1
-    elif regions['l_bright'] < d or regions['r_bright'] < d:
-        state_description = 'case 7 - r_bright'
-        linear_x = 0
-        linear_y = 0
-        angular_z = -wz * vf
-        last_obs = 1
-    else:
-        state_description = 'case 10 - Far'
-        if last_obs == 1:
-            linear_x = 0
-            linear_y = vy
-            angular_z = 0
-        elif last_obs == -1:
-            linear_x = 0
-            linear_y = -vy
-            angular_z = 0
-        elif last_obs == 0:
-            linear_x = vx
-            linear_y = 0
-            angular_z = 0
 
+    elif regions['front'] < 1.5 *d:
+        if regions['front'] < d:
+            if regions["left"] < d:
+                #linear_x = vx * vf 
+                angular_z = wz * vf
+                #linear_y = vx * vf
+            else:
+                state_description = 'case 2 - front'
+                linear_x = 0
+                #angular_z = wz * vf
+                linear_y = vx * vf
+
+        elif (regions['right'] < 1.5 * d) or (regions['r_fright'] < 1.5 * d):
+            state_description = 'case 3 - front-right but far'
+            linear_x = vx * vf 
+            linear_y = vx * vf
+        else:
+            state_description = 'case 5 - front- but far'
+            linear_x = vx * vf
+            angular_z = 0
+    elif (regions['right'] < 1.5*d) or (regions['r_fright'] < 1.5*d) or (regions['r_bright'] < 1.5*d):
+        if (regions['right'] < d) or (regions['r_fright'] < d):
+            state_description = 'case 6 - right '
+            linear_x = 0
+            linear_y = vx * vf 
+        elif (regions['r_bright'] < d):
+            linear_x = vx * vf 
+            linear_y = vx * vf
+        else:
+            state_description = 'case 7 between'
+            linear_x = vx * vf
+            angular_z = 0
+    else:
+        state_description = 'case 8 ?'
+        #linear_x = vx * vf * 0.5
+        #angular_z = - wz * vf
+        linear_y = - vx * vf 
     rospy.loginfo(state_description)
-    rospy.loginfo(f"Current last_obs: { last_obs}")
     msg.linear.x = linear_x
-    msg.linear.y = linear_y
     msg.angular.z = angular_z
+    msg.linear.y = linear_y
     pub.publish(msg)
     rate.sleep()
-
 
 def shutdown():
     msg = Twist()
@@ -154,7 +126,6 @@ def shutdown():
     pub.publish(msg)
     rospy.loginfo("Stop rUBot")
 
-
 def main():
     global pub
     global sub
@@ -163,29 +134,27 @@ def main():
     global vx
     global wz
     global vf
-    global vy
-    global last_obs
 
     rospy.init_node('wall_follower')
     pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
     sub = rospy.Subscriber('/scan', LaserScan, clbk_laser)
     rospy.on_shutdown(shutdown)
     rate = rospy.Rate(25)
-    last_obs = 0
 
-    d = rospy.get_param("~distance_laser")
-    vx = rospy.get_param("~forward_speed")
-    wz = rospy.get_param("~rotation_speed")
-    vf = rospy.get_param("~speed_factor")
-    vy = rospy.get_param("~lateral_speed")
-
+    d= rospy.get_param("~distance_laser")
+    vx= rospy.get_param("~forward_speed")
+    wz= rospy.get_param("~rotation_speed")
+    vf= rospy.get_param("~speed_factor")
+    
+    
 if __name__ == '__main__':
-
     try:
         main()
         rospy.spin()
     except rospy.ROSInterruptException:
         shutdown()
+
+    
 
 
 if __name__ == '__main__':

@@ -44,7 +44,7 @@ class rUBot:
         # En la primera ejecucion, calculamos el factor de correcion del Lidar
                 
         closestDistance, elementIndex = min((val, idx) for (idx, val) in enumerate(scan.ranges) if scan.range_min < val < scan.range_max)
-        angleClosestDistance = (elementIndex / 2)  
+        angleClosestDistance = (elementIndex / len(scan.ranges) * 360)  
 
         angleClosestDistance= self.__wrapAngle(angleClosestDistance)
         rospy.loginfo("Degree wraped %5.2f ",(angleClosestDistance))
@@ -58,12 +58,24 @@ class rUBot:
                       
 
         if closestDistance < self._distanceLaser and -80 < angleClosestDistance < 80:
-            self._msg.linear.x = self._backwardSpeed * self._speedFactor
-            self._msg.angular.z = -self.__sign(angleClosestDistance) * self._rotationSpeed * self._speedFactor
-            rospy.logwarn("Within laser distance threshold. Rotating the robot (z=%4.1f)...", self._msg.angular.z)
-
-        else:
+            if angleClosestDistance <= 45 and angleClosestDistance >= -45: 
+                # Front
+                self._msg.linear.x = 0
+                self._msg.linear.y = 0
+                self._msg.angular.z = self._rotationSpeed * self._speedFactor
+            elif angleClosestDistance > 45:
+                # Front and Right
+                self._msg.linear.x = 0
+                self._msg.linear.y = -self._forwardSpeed * self._speedFactor
+                self._msg.angular.z = 0
+            elif angleClosestDistance < -45:
+                # Front and Left 
+                self._msg.linear.x = 0
+                self._msg.linear.y = self._forwardSpeed * self._speedFactor
+                self._msg.angular.z = 0
+        else: 
             self._msg.linear.x = self._forwardSpeed * self._speedFactor
+            self._msg.linear.y = 0
             self._msg.angular.z = 0
 
     def __sign(self, val):
