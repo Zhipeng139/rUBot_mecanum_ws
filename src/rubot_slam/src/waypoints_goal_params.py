@@ -7,6 +7,12 @@ import yaml
 import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 
+def gener_params():
+    number = 1
+    while True:
+        yield rospy.get_param(f"~goal{number}")
+        number += 1
+
 def create_initpose(position_x, position_y, orientation_z):
     q_x, q_y, q_z, q_w = quaternion_from_euler(0.0, 0.0, orientation_z)
     pose_msg = PoseWithCovarianceStamped()
@@ -43,20 +49,35 @@ def init_pose():
     rate.sleep()
     rospy.loginfo("Init Pose done!")
     
+def movebase_client_gen():
+    client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
+    gen_param = gener_params()
+
+    for goal in gen_param:
+        goal_pose = create_pose_stamped(goal['x'], goal['y'], radians(goal['w']))
+        client.send_goal(goal_pose)
+        wait = client.wait_for_result(rospy.Duration(20))
+        if not wait:
+            rospy.logerr("Action server not available!")
+            rospy.signal_shutdown("Action server not available!")
+        else:
+            rospy.loginfo("Goal execution done!")   
+
 def movebase_client():
     client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
  
     client.wait_for_server()
     
     goal1 = rospy.get_param("~goal1")
-    goal2 = rospy.get_param("~goal2")
+    #goal2 = rospy.get_param("~goal2")
+    
 
     goal_pose1 = create_pose_stamped(goal1['x'], goal1['y'], radians(goal1['w']))
-    goal_pose2 = create_pose_stamped(goal2['x'], goal2['y'], radians(goal2['w']))
+    #goal_pose2 = create_pose_stamped(goal2['x'], goal2['y'], radians(goal2['w']))
 
     # --- Follow Waypoints ---
-    waypoints = [goal_pose1, goal_pose2]
-    for i in range(2):
+    waypoints = [goal_pose1]
+    for i in range(1):
         client.send_goal(waypoints[i])
         wait = client.wait_for_result(rospy.Duration(20))
         if not wait:
