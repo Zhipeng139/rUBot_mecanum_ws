@@ -49,19 +49,23 @@ def init_pose():
     rate.sleep()
     rospy.loginfo("Init Pose done!")
     
-def movebase_client_gen():
+def movebase_client_gen(limit):
     client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
+    client.wait_for_server()
+
     gen_param = gener_params()
 
-    for goal in gen_param:
+    for i in range(limit):
+        goal = next(gen_param)
         goal_pose = create_pose_stamped(goal['x'], goal['y'], radians(goal['w']))
         client.send_goal(goal_pose)
-        wait = client.wait_for_result(rospy.Duration(20))
+        wait = client.wait_for_result(rospy.Duration(40))
+
         if not wait:
             rospy.logerr("Action server not available!")
             rospy.signal_shutdown("Action server not available!")
         else:
-            rospy.loginfo("Goal execution done!")   
+            rospy.loginfo("Goal execution done!") 
 
 def movebase_client():
     client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
@@ -89,8 +93,8 @@ def movebase_client():
 if __name__ == '__main__':
     try:
         rospy.init_node('movebase_client_waypoints')
-        #init_pose()
-        movebase_client()
-
+        init_pose()
+        #movebase_client()
+        movebase_client_gen(3)
     except rospy.ROSInterruptException:
         rospy.loginfo("Navigation test finished.")
