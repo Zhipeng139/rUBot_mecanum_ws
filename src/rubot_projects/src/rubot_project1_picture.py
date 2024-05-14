@@ -34,8 +34,8 @@ if __name__ == '__main__':
     rospy.init_node('take_photo', anonymous=False)
 
     # Get parameters from launch file
-    img_topic = rospy.get_param('~image_topic', '/rubot/camera1/image_raw')
-    img_title = rospy.get_param('~image_title', './src/rubot_projects/photos/photo3_sw.jpg')
+    img_topic = rospy.get_param('~image_topic', '/usb_cam/image_raw')
+    img_title = rospy.get_param('~image_title', './src/rubot_projects/photos/photo3_hw_2.jpg')
 
     # Create TakePhoto instance
     camera = TakePhoto(img_topic, img_title)
