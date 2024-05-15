@@ -388,6 +388,7 @@ software
 
 ```shell
 roslaunch rubot_projects rubot_projects_bringup_sw.launch
+roslaunch rubot_slam rubot_navigation_sw.launch
 roslaunch rubot_projects rubot_project3_signals.launch
 ```
 
@@ -395,7 +396,7 @@ To bringup the real robot for the Project process use the speciffic launch file:
 
 ```shell
 roslaunch rubot_projects rubot_projects_bringup_hw_rock.launch
-roslaunch rubot_slam rubot_navigation_sw.launch
+roslaunch rubot_slam rubot_navigation.launch
 roslaunch rubot_projects rubot_project3_signals.launch
 ```
 
