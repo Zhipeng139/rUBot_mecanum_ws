@@ -59,15 +59,17 @@ Follow the procedure:
 **For virtual environment use:**
 
 ```shell
-roslaunch rubot_projects rubot_projects_bringup_sw.launch 
+roslaunch rubot_projects rubot_projects_bringup_sw.launch
 rostopic list
 ```
+
 **For real rUBot use:**
 
 ```shell
-roslaunch rubot_projects rubot_projects_bringup_hw_rock.launch 
+roslaunch rubot_projects rubot_projects_bringup_hw_rock.launch
 rostopic list
 ```
+
 - Then modify the "take_photo.py" python file with:
   - the proper topic name:
     - for simulation: /rubot/camera1/image_raw
@@ -78,16 +80,19 @@ rostopic list
 ```shell
 rosrun rubot_projects rubot_project1_picture.py
 ```
-If you use a launch file, you have to specify the absolute path: 
+
+If you use a launch file, you have to specify the absolute path:
+
 - "/home/puigmanel/Desktop/rUBot_mecanum_ws/src/photos/photo3_sw.jpg"
 - or use "$(find rubot_projects)/photos/photo3_sw.jpg"
+
 ```shell
 roslaunch rubot_projects rubot_project1_picture.launch
 ```
+
 - Open the "photos" folder and you will see the photo1_sw.jpg created
 
 ![](./Images/05_Projects/01_photo1.jpg)
-
 
 ## **Project 2: Navigate to a sequence of goals in the map and take a photo**
 
@@ -96,7 +101,7 @@ The objective is to navigate to 2 different targets and take pictures.
 We will combine the two programs:
 
 - Send a sequence of goals to navigation stack
-- Take a Photo 
+- Take a Photo
 
 We will take a "goals_foto.yaml" file to specify the POSE goal and Photo path-name.
 
@@ -107,11 +112,13 @@ Proceed with the following steps:
   ```shell
   roslaunch rubot_projects rubot_projects_bringup_sw.launch
   ```
+
 - Run the navigation (verify the map file!):
 
   ```shell
   roslaunch rubot_slam rubot_navigation.launch
   ```
+
 - Launch the "rubot_project2_navigation_picture.launch" program:
 
   ```shell
@@ -122,7 +129,6 @@ Proceed with the following steps:
 > Use "rospack" to obtain the absolute path to the photo. Alternative is to specify the absolute path that will be different for each student
 
 ![](./Images/05_Projects/project2_nav_photo.png)
-
 
 ## **Project 3: Follow a point based trajectory with traffic signs**
 
@@ -176,8 +182,10 @@ export GAZEBO_MODEL_PATH=$HOME/rUBot_mecanum_ws/src/rubot_mecanum_description/mo
 - or copy the models folder in ~/.gazebo/models/
 
 #### **Create a world file**
+
 The best way to create a world, you can:
-- add models in our empty world 
+
+- add models in our empty world
 - add each model in the last part of your world file (here starts with empy.world):
 
 ```xml
@@ -199,7 +207,7 @@ The best way to create a world, you can:
     <!-- A wall90cm -->
     <include>
       <uri>model://wall90cm</uri>
-      <name>wall90_1</name>      
+      <name>wall90_1</name>
       <pose>0.5 0 0 0 0 1.57</pose>
     </include>
     <!-- A wall90cm -->
@@ -227,18 +235,22 @@ roslaunch rubot_projects rubot_projects_bringup_sw.launch
 
 ![](./Images/05_Projects/project3_bringup.png)
 
-
 ### **3. Create the map**
 
 To create the MAP, we start the slam_gmapping node
+
 ```shell
 roslaunch rubot_slam rubot_slam.launch
 ```
+
 - use the navigation program you have designed to follow the walls for exemple to properly generate the map.
+
 ```shell
 roslaunch rubot_control rubot_wall_follower_rg.launch
 ```
+
 - or let's do this as usual with the teleoperation package:
+
 ```shell
 rosrun teleop_twist_keyboard teleop_twist_keyboard.py
 ```
@@ -253,6 +265,7 @@ rosrun map_server map_saver -f project3_map
 ### **4. Create the "point based trajectory"**
 
 You have to define the waypoints in a "trajectorys.yaml" file on rubot_projects/config folder:
+
 ```python
 goal_s:
   x: 0.5
@@ -284,12 +297,14 @@ img_topic: '/rubot/camera1/image_raw'
 ### **5. Signal identification**
 
 To identify the signal placed in each waypont, you can use:
+
 - Image processing techniques
 - Image identification techniques
 
 With the code created, you will be able to identify the signal you have found. The next waypoint will depend on the signal identified.
 
 If you use Image processing techniques to identify the contours:
+
 - you can select the external circle contorur (parent) and the internal arrow contour (child) of signal
 - obtain the gravity center (momentum)
 - obtain the difference of gravity centers to identify right (positive) or left (negative) Traffic Signal
@@ -299,16 +314,19 @@ If you use Image processing techniques to identify the contours:
 **Lab Activity 8: rUBot signal identification**
 
 The objective of this activity is:
+
 - Identify the "right" and "left" traffic signals using:
   - Image processing techniques
   - Image Identification techniques
 
 To bringup the real robot for the Project process use the speciffic launch file:
+
 ```shell
 roslaunch rubot_projects rubot_projects_bringup_hw_rock.launch
 ```
 
 Upload:
+
 - video of real process for signal identiffication
 - the description of the techniques you have used
 - the final "TrafficSignalsDetection.py" code
@@ -316,6 +334,7 @@ Upload:
 ### **6. SLAM and Navigation within the tajectory**
 
 You have to create the trajectory.py file to:
+
 - go to the first waypoint
 - take picture of the signal
 - identify the signal
@@ -325,22 +344,25 @@ You have to create the trajectory.py file to:
 First of all you have to bringup your rUBot:
 
 when simulating in virtual environment:
+
 ```shell
 roslaunch rubot_projects rubot_projects_bringup_sw.launch
 ```
 
 when using the real robot:
+
 ```shell
 roslaunch rubot_projects rubot_projects_bringup_hw_rock.launch
 ```
+
 You will have then to execute the Navigation on the project Map: "project3_map.yaml"
+
 ```shell
 roslaunch rubot_slam rubot_navigation.launch
 roslaunch rubot_projects rubot_project3_signals.launch
 ```
 
 ![](./Images/05_Projects/project3_navigation.png)
-
 
 ![](./Images/05_Projects/project3_target.png)
 
@@ -349,24 +371,35 @@ You can see a video of the final process:
 
 Video link: https://youtu.be/lLoMEeCuRck
 
-
 **Lab Activity 9: rUBot drive with traffic signals**
 
 The objective of this activity is:
+
 - To drive the rUBot in a predesigned world considering:
   - a list of target points defined in "goals_project3.yaml" file
   - a traffic signal located in the first target point which defines the following target point
 
 To accomplish the objective you will have to:
+
 - Modify the "rubot_project2_navigation_picture.py" file to accomplish the project objectives
 - import the "TrafficSignalsDetection.py" in previous python file for the identification process
 
+software
+
+```shell
+roslaunch rubot_projects rubot_projects_bringup_sw.launch
+roslaunch rubot_projects rubot_project3_signals.launch
+```
 
 To bringup the real robot for the Project process use the speciffic launch file:
+
 ```shell
 roslaunch rubot_projects rubot_projects_bringup_hw_rock.launch
+roslaunch rubot_slam rubot_navigation.launch
+roslaunch rubot_projects rubot_project3_signals.launch
 ```
 
 Upload:
+
 - video of real process project
 - the final "rubot_project3_signals.py" code

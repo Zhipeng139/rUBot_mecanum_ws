@@ -1,2 +1,9 @@
+# hardware
+# goal1: {"x": 5.1, "y": 9.4, "w": -60, "photo": './src/rubot_projects/photos/goal1.png'}
+# goal2: {"x": 6.0, "y": 9.9, "w": -60, "photo": './src/rubot_projects/photos/goal2.png'}
+# goal2: {"x": 6.0, "y": 9.9, "w": -60, "photo": './src/rubot_projects/photos/goal3.png'}
+
+# software
 goal1: {"x": 5.1, "y": 9.4, "w": -60, "photo": './src/rubot_projects/photos/goal1.png'}
 goal2: {"x": 6.0, "y": 9.9, "w": -60, "photo": './src/rubot_projects/photos/goal2.png'}
+goal2: {"x": 6.0, "y": 9.9, "w": -60, "photo": './src/rubot_projects/photos/goal3.png'}
