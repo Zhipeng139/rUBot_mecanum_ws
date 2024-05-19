@@ -9,7 +9,7 @@ import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 import cv2 as cv
 from rubot_project1_picture import TakePhoto
-from TrafficSignalsDetection_sp import signal_detected
+from TrafficSignalsDetection_p2 import signal_detected
 
 import cv2
 import numpy as np
@@ -21,9 +21,9 @@ import numpy as np
 #     signal = "left"
 #     return signal
 
-def find_arrow_direction(image):
+def find_arrow_direction(img):
     # Convert to grayscale
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # Apply edge detection
     gaussian = cv2.GaussianBlur(gray, (3, 3), 1)
@@ -81,67 +81,6 @@ def create_pose_stamped(position_x, position_y, rotation_z):
     goal.target_pose.pose.orientation.w = q_w
     return goal
 
-# def gener_params():
-#     number = 1
-#     while True:
-#         yield rospy.get_param(f"~goal{number}")
-#         number += 1
-
-# def movebase_client_gen(limit):
-#     client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
-#     client.wait_for_server()
-
-#     gen_param = gener_params()
-#     img_topic = rospy.get_param("~img_topic")
-
-#     for i in range(limit):
-#         goal = next(gen_param)
-#         goal_pose = create_pose_stamped(goal['x'], goal['y'], radians(goal['w']))
-#         client.send_goal(goal_pose)
-#         wait = client.wait_for_result(rospy.Duration(40))
-
-#         if not wait:
-#             rospy.logerr("Action server not available!")
-#             rospy.signal_shutdown("Action server not available!")
-#         else:
-#             rospy.loginfo("Goal execution done!") 
-#             camera = TakePhoto(img_topic, photos_path + goal['photo'])
-#             # Important! Allow up to one second for connection
-#             rospy.sleep(1)
-#             camera.save_picture(photos_path + goal['photo'])
-#     gen_param = gener_params()
-#     img_topic = rospy.get_param("~img_topic")
-
-#     for i in range(limit):
-#         goal = next(gen_param)
-#         goal_pose = create_pose_stamped(goal['x'], goal['y'], radians(goal['w']))
-#         client.send_goal(goal_pose)
-#         wait = client.wait_for_result(rospy.Duration(40))
-
-#         if not wait:
-#             rospy.logerr("Action server not available!")
-#             rospy.signal_shutdown("Action server not available!")
-#         else:
-#             rospy.loginfo("Goal execution done!") 
-#             camera = TakePhoto(img_topic, photos_path + goal['photo'])
-#             # Important! Allow up to one second for connection
-#             rospy.sleep(1)
-#             camera.save_picture(photos_path + goal['photo'])
-
-    
-#             # Process photo signal
-#             traffic_signal =  find_arrow_direction(photos_path + goal['photo'])
-#             #traffic_signal = "right"
-#             if traffic_signal == "right":
-#                 rospy.loginfo("Signal detected: RIGHT!")
-#                 waypoints = [goal_pose_r, goal_pose_t]
-#             elif traffic_signal == "left":
-#                 rospy.loginfo("Signal detection: LEFT!")
-#                 waypoints = [goal_pose_l, goal_pose_t]
-#             else:
-#                 waypoints = [goal_pose_s, goal_pose_t]
-#                 rospy.loginfo("Not a correct detection!")
-        
    
 def nav2goals():
     client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
@@ -175,8 +114,9 @@ def nav2goals():
         camera.save_picture(name_photo_s)
 
     # Process photo signal
+    image = cv2.imread(name_photo_s)
+    # traffic_signal = find_arrow_direction(image)
     traffic_signal = signal_detected(name_photo_s)
-    # traffic_signal = find_arrow_direction(name_photo_s)
     #traffic_signal = "right"
     if traffic_signal == "right":
         rospy.loginfo("Signal detected: RIGHT!")
