@@ -142,7 +142,9 @@ def nav2goals():
     #traffic_signal = "right"
     while traffic_signal == "test":
         traffic_signal = signal_detected(name_photo_s)
-        
+
+    wait = client.wait_for_result(rospy.Duration(20))
+    print(traffic_signal)
     if traffic_signal == "right":
         rospy.loginfo("Signal detected: RIGHT!")
         waypoints = [goal_pose_r, goal_pose_t]
@@ -150,13 +152,15 @@ def nav2goals():
         rospy.loginfo("Signal detection: LEFT!")
         waypoints = [goal_pose_l, goal_pose_t]
     else:
+        print("why______________________")
+        print(traffic_signal)
         waypoints = [goal_pose_s, goal_pose_t]
         rospy.loginfo("Not a correct detection!")
 
     # --- Follow Waypoints ---
     for i in range(2):
         client.send_goal(waypoints[i])
-        wait = client.wait_for_result(rospy.Duration(30))
+        wait = client.wait_for_result(rospy.Duration(50))
         if not wait:
             rospy.logerr("Action server not available!")
             rospy.signal_shutdown("Action server not available!")
