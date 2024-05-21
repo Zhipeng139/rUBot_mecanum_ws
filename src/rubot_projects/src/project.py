@@ -138,6 +138,7 @@ def nav2goals():
     traffic_signal = "test"
     traffic_signal = signal_detected(name_photo_s)
 
+    rospy.sleep(5)
     print(traffic_signal)
     #traffic_signal = "right"
     while traffic_signal == "test":
