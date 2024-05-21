@@ -83,10 +83,12 @@ def signal_detected(photo):
 
     direction =  class_name[2:]
     print("direction: " + direction)
-    if direction == "right":
+    print("clas name: " + class_name)
+    print("clas name 2:: " + class_name[2:])
+    if "right" in direction:
         print("right")
         return "right"
-    elif direction == "left":
+    elif "left" in direction:
         print("left")
         return "left"
     else:
