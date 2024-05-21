@@ -1,0 +1,25 @@
+goal_s:
+  x: 5.1
+  y: 9.4
+  w: -60
+  photo_name: 'goal_s.png'
+
+goal_r:
+  x: 6.0
+  y: 9.9
+  w: -60
+  photo_name: 'goal_r.png'
+
+goal_l:
+  x: 0
+  y: 0
+  w: 90
+  photo_name: 'goal_l.png'
+
+goal_t:
+  x: -1
+  y: 1
+  w: 180
+  photo_name: 'goal_t.png'
+
+img_topic: '/usb_cam/image_raw'
