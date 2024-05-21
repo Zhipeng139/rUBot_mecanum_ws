@@ -404,3 +404,17 @@ Upload:
 
 - video of real process project
 - the final "rubot_project3_signals.py" code
+
+To project the real robot for the Project process use the speciffic launch file:
+
+```shell
+roslaunch rubot_projects rubot_projects_bringup_sw.launch
+roslaunch rubot_slam rubot_navigation.launch
+roslaunch rubot_projects rubot_project_final_sw.launch
+```
+
+```shell
+roslaunch rubot_projects rubot_projects_bringup_hw_rock.launch
+roslaunch rubot_slam rubot_navigation.launch
+roslaunch rubot_projects rubot_project3_signals.launch
+```
