@@ -83,7 +83,15 @@ def signal_detected(photo):
 
     direction =  class_name[2:]
     print("direction: " + direction)
-    return direction
+    if direction == "right":
+        print("right")
+        return "right"
+    elif direction == "left":
+        print("left")
+        return "left"
+    else:
+        print("up")
+        return "up"
 
 
 def create_pose_stamped(position_x, position_y, rotation_z):
@@ -144,8 +152,7 @@ def nav2goals():
     #traffic_signal = "right"
     # while traffic_signal == "test":
     #     traffic_signal = signal_detected(name_photo_s)
-
-    wait = client.wait_for_result(rospy.Duration(20))
+    rospy.sleep(2)
     print(traffic_signal)
     rospy.sleep(2)
     if traffic_signal == "right":
