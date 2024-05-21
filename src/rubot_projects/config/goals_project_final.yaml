@@ -1,7 +1,7 @@
 goal_s:
-  x: 5.1
-  y: 9.4
-  w: -60
+  x: 4.93
+  y: 9.63
+  w: -30
   photo_name: 'goal_s.png'
 
 goal_r:
