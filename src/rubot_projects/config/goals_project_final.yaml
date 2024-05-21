@@ -5,21 +5,21 @@ goal_s:
   photo_name: 'goal_s.png'
 
 goal_r:
-  x: 6.0
-  y: 9.9
-  w: -60
+  x: 5.24
+  y: 8.38
+  w: -30
   photo_name: 'goal_r.png'
 
 goal_l:
-  x: 0
-  y: 0
-  w: 90
+  x: 5.95
+  y: 9.06
+  w: -30
   photo_name: 'goal_l.png'
 
 goal_t:
-  x: -1
-  y: 1
-  w: 180
+  x: 5.57
+  y: 6.93
+  w: -30
   photo_name: 'goal_t.png'
 
 img_topic: '/usb_cam/image_raw'
