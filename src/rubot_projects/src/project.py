@@ -143,6 +143,7 @@ def nav2goals():
         rospy.signal_shutdown("Action server not available!")
     else:
         rospy.loginfo("AI PITCH!") 
+        rospy.loginfo(traffic_signal) 
         #traffic_signal = "right"
         if traffic_signal == "right":
             rospy.loginfo("Signal detected: RIGHT!")
