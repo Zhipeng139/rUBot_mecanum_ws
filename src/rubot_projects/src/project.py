@@ -136,16 +136,23 @@ def nav2goals():
     image = cv2.imread(name_photo_s)
     # traffic_signal = find_arrow_direction(image)
     traffic_signal = signal_detected(name_photo_s)
-    #traffic_signal = "right"
-    if traffic_signal == "right":
-        rospy.loginfo("Signal detected: RIGHT!")
-        waypoints = [goal_pose_r, goal_pose_t]
-    elif traffic_signal == "left":
-        rospy.loginfo("Signal detection: LEFT!")
-        waypoints = [goal_pose_l, goal_pose_t]
+
+    wait = client.wait_for_result(rospy.Duration(30))
+    if not wait:
+        rospy.logerr("Action server not available!")
+        rospy.signal_shutdown("Action server not available!")
     else:
-        waypoints = [goal_pose_s, goal_pose_t]
-        rospy.loginfo("Not a correct detection!")
+        rospy.loginfo("AI PITCH!") 
+        #traffic_signal = "right"
+        if traffic_signal == "right":
+            rospy.loginfo("Signal detected: RIGHT!")
+            waypoints = [goal_pose_r, goal_pose_t]
+        elif traffic_signal == "left":
+            rospy.loginfo("Signal detection: LEFT!")
+            waypoints = [goal_pose_l, goal_pose_t]
+        else:
+            waypoints = [goal_pose_s, goal_pose_t]
+            rospy.loginfo("Not a correct detection!")
 
     # --- Follow Waypoints ---
     for i in range(2):
