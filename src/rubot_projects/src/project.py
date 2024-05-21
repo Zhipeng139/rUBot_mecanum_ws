@@ -169,7 +169,7 @@ if __name__ == '__main__':
 
         np.set_printoptions(suppress=True)
         # Load the model
-        model = load_model(rubot_projects_path + '/src/model/' + "keras_Model.h5", compile=False)
+        model = load_model(rubot_projects_path + '/src/model/' + "keras_model.h5", compile=False)
         # Load the labels
         class_names = open(rubot_projects_path + '/src/model/' + "labels.txt", "r").readlines()
 
