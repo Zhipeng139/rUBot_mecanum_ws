@@ -9,7 +9,7 @@ import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 import cv2 as cv
 from rubot_project1_picture import TakePhoto
-from TrafficSignalsDetection_p2 import signal_detected
+# from TrafficSignalsDetection_p2 import signal_detected
 from keras.models import load_model  # TensorFlow is required for Keras to work
 import cv2
 import numpy as np
@@ -68,32 +68,32 @@ def find_arrow_direction(img):
 
     return direction
 
-# def signal_detected(photo):
-#     img = cv2.imread(photo)
-#     image = cv2.resize(img, (224, 224), interpolation=cv2.INTER_AREA)
-#     image = np.asarray(image, dtype=np.float32).reshape(1, 224, 224, 3)
-#     # Normalize the image array
-#     image = (image / 127.5) - 1
+def signal_detected(photo):
+    img = cv2.imread(photo)
+    image = cv2.resize(img, (224, 224), interpolation=cv2.INTER_AREA)
+    image = np.asarray(image, dtype=np.float32).reshape(1, 224, 224, 3)
+    # Normalize the image array
+    image = (image / 127.5) - 1
 
-#     # Predicts the model
-#     prediction = model.predict(image)
-#     index = np.argmax(prediction)
-#     class_name = class_names[index]
-#     confidence_score = prediction[0][index]
+    # Predicts the model
+    prediction = model.predict(image)
+    index = np.argmax(prediction)
+    class_name = class_names[index]
+    confidence_score = prediction[0][index]
 
-#     direction =  class_name[2:]
-#     print("direction: " + direction)
-#     print("clas name: " + class_name)
-#     print("clas name 2:: " + class_name[2:])
-#     if "right" in direction:
-#         print("right")
-#         return "right"
-#     elif "left" in direction:
-#         print("left")
-#         return "left"
-#     else:
-#         print("up")
-#         return "up"
+    direction =  class_name[2:]
+    print("direction: " + direction)
+    print("clas name: " + class_name)
+    print("clas name 2:: " + class_name[2:])
+    if "right" in direction:
+        print("right")
+        return "right"
+    elif "left" in direction:
+        print("left")
+        return "left"
+    else:
+        print("up")
+        return "up"
 
 
 def create_pose_stamped(position_x, position_y, rotation_z):
