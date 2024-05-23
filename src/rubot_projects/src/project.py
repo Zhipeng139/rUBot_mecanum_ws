@@ -25,48 +25,48 @@ import numpy as np
 
 # CAMERA can be 0 or 1 based on 
 
-def find_arrow_direction(img):
-    # Convert to grayscale
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+# def find_arrow_direction(img):
+#     # Convert to grayscale
+#     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    # Apply edge detection
-    gaussian = cv2.GaussianBlur(gray, (3, 3), 1)
-    edges = cv2.Canny(gaussian, 150, 180)
-    #plt.imshow(edges, cmap='gray')
-    #plt.show()
+#     # Apply edge detection
+#     gaussian = cv2.GaussianBlur(gray, (3, 3), 1)
+#     edges = cv2.Canny(gaussian, 150, 180)
+#     #plt.imshow(edges, cmap='gray')
+#     #plt.show()
 
-    # Find contours
-    contours, _ = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+#     # Find contours
+#     contours, _ = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-    # Assume the largest contour is the arrow
-    arrow_contour = max(contours, key=cv2.contourArea)
+#     # Assume the largest contour is the arrow
+#     arrow_contour = max(contours, key=cv2.contourArea)
 
-    # Find the bounding rectangle for the largest contour
-    x, y, w, h = cv2.boundingRect(arrow_contour)
+#     # Find the bounding rectangle for the largest contour
+#     x, y, w, h = cv2.boundingRect(arrow_contour)
     
-    # Draw the bounding rectangle
-    #cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-    #plt.imshow(image)
-    #plt.show()
+#     # Draw the bounding rectangle
+#     #cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+#     #plt.imshow(image)
+#     #plt.show()
 
-    # Calculate the center of the arrow
-    center = (x + w // 2, y + h // 2)
+#     # Calculate the center of the arrow
+#     center = (x + w // 2, y + h // 2)
 
-    # Determine direction based on the geometry of the arrow
-    # Find the center of mass of the arrow
-    M = cv2.moments(arrow_contour)
-    cx = int(M['m10']/M['m00'])
-    cy = int(M['m01']/M['m00'])
+#     # Determine direction based on the geometry of the arrow
+#     # Find the center of mass of the arrow
+#     M = cv2.moments(arrow_contour)
+#     cx = int(M['m10']/M['m00'])
+#     cy = int(M['m01']/M['m00'])
 
-    # Determine if the arrow is primarily horizontal or vertical
-    if w > h:
-        # Horizontal arrow
-        direction = 'left' if cx < center[0] else 'right'
-    else:
-        # Vertical arrow
-        direction = 'up' if cy < center[1] else 'down'
+#     # Determine if the arrow is primarily horizontal or vertical
+#     if w > h:
+#         # Horizontal arrow
+#         direction = 'left' if cx < center[0] else 'right'
+#     else:
+#         # Vertical arrow
+#         direction = 'up' if cy < center[1] else 'down'
 
-    return direction
+#     return direction
 
 def signal_detected(photo):
     img = cv2.imread(photo)
@@ -82,17 +82,17 @@ def signal_detected(photo):
     confidence_score = prediction[0][index]
 
     direction =  class_name[2:]
-    print("direction: " + direction)
-    print("clas name: " + class_name)
-    print("clas name 2:: " + class_name[2:])
+    # print("direction: " + direction)
+    # print("clas name: " + class_name)
+    # print("clas name 2:: " + class_name[2:])
     if "right" in direction:
-        print("right")
+        # print("right")
         return "right"
     elif "left" in direction:
-        print("left")
+        # print("left")
         return "left"
     else:
-        print("up")
+        # print("up")
         return "up"
 
 
@@ -145,18 +145,18 @@ def nav2goals():
     # Process photo signal
     # image = cv2.imread(name_photo_s)
     # traffic_signal = find_arrow_direction(image)
-    traffic_signal = "left"
-    rospy.sleep(5)
+    # traffic_signal = "left"
+    rospy.sleep(2)
     traffic_signal = signal_detected(name_photo_s)
 
-    rospy.sleep(5)
-    print(traffic_signal)
+    rospy.sleep(2)
+    # print(traffic_signal)
     #traffic_signal = "right"
     # while traffic_signal == "test":
     #     traffic_signal = signal_detected(name_photo_s)
-    rospy.sleep(2)
-    print(traffic_signal)
-    rospy.sleep(2)
+    # rospy.sleep(2)
+    # print(traffic_signal)
+    # rospy.sleep(2)
     if traffic_signal == "right":
         rospy.loginfo("Signal detected: RIGHT!")
         waypoints = [goal_pose_r, goal_pose_t]
@@ -164,8 +164,8 @@ def nav2goals():
         rospy.loginfo("Signal detection: LEFT!")
         waypoints = [goal_pose_l, goal_pose_t]
     else:
-        print("why______________________")
-        print(traffic_signal)
+        # print("why______________________")
+        # print(traffic_signal)
         waypoints = [goal_pose_s, goal_pose_t]
         rospy.loginfo("Not a correct detection!")
 
