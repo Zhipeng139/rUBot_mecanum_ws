@@ -26,7 +26,6 @@ def signal_detected(photo):
 
     # Iterate through contours and hierarchy
     for i in range(len(contours)):
-        #print (f"Contour: {i}")
         hierarchy_info = hierarchy[0][i]
         cv2.drawContours(img, contours[i], -1, (0,255,0), 1)
         cv2.imshow('imagen',img)
@@ -38,10 +37,6 @@ def signal_detected(photo):
             if hierarchy_info[3] > max_hierarchy_value:
                 max_hierarchy_value = hierarchy_info[3]
                 max_parent_index = i#index starts with 0
-
-    #print ('hierarchy=\n',hierarchy)
-    #print (f"Index: {max_parent_index} Value: {max_hierarchy_value}")
-    #cv2.waitKey(0)
 
     # Access the first child contour using hierarchy_info[max_hierarchy_value]
     child_contour = contours[max_parent_index]
@@ -59,10 +54,8 @@ def signal_detected(photo):
         img_child=cv2.drawContours(img, [child_contour], -1, (255, 0, 0), 1)
         # Draw the centroid as a blue dot
         cv2.circle(img_child, (cx, cy), 2, (255, 0, 0), -1)
-        #print(f"Child Contour: ({cx} , {cy})")
         # Print the area of the first child contour
         area = cv2.contourArea(child_contour)
-        #print(f"Area of child Contour {i+1}: {area}")
         cv2.imshow('Child', img_child)
         #cv2.waitKey(0)
         
@@ -78,7 +71,6 @@ def signal_detected(photo):
         img_parent=cv2.drawContours(img, [parent_contour], -1, (0, 0, 255), 1)
         # Draw the centroid as a red dot
         cv2.circle(img_parent, (px, py), 2, (0, 0, 255), -1)
-        #print(f"Parent Contour: ({px} , {py})")
         cv2.imshow('Parent', img_parent)
         #cv2.waitKey(0)
 
@@ -99,9 +91,7 @@ def signal_detected(photo):
 
 if __name__ == '__main__':
     # Read signal
-    #image = cv2.imread('left.png')
     photo = "left.png"
     signal = signal_detected(photo)
-    #cv2.imshow('Signal',image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()

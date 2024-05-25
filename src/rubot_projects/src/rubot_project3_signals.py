@@ -15,11 +15,6 @@ import cv2
 import numpy as np
 
 
-# def signal_detected(photo):
-#     image = cv2.imread(photo)
-#     cv2.imshow('Signal',image)
-#     signal = "left"
-#     return signal
 
 def find_arrow_direction(img):
     # Convert to grayscale
