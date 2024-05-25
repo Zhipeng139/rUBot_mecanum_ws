@@ -90,13 +90,11 @@ def signal_detected(photo):
     cv2.imshow('Contours with Centroids', cv2.resize(img, (800, 600)))
     #cv2.waitKey(0)
     #cv2.destroyAllWindows()
-    rospy.loginfo("Difference " + str(dif))
     
     if dif > 0:
         signal = "right"
     else:
         signal = "left"
-    rospy.loginfo("Centroids " + str(dif))
     return signal
 
 if __name__ == '__main__':
@@ -104,7 +102,6 @@ if __name__ == '__main__':
     #image = cv2.imread('left.png')
     photo = "left.png"
     signal = signal_detected(photo)
-    print("Signal detected: ", signal)
     #cv2.imshow('Signal',image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
